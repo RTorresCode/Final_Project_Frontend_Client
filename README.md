@@ -1,6 +1,10 @@
 # Final_Project_Frontend_Client
 Frontend client code for CSCI 39548 final project (Spring '22)
 
+## Group members
+Ramon Torres - Mightywise
+Tahmina Munni - TahminaM
+
 ### Use the following steps to set up and run the client (front-end) application on your local machine
 1.	Download the GitHub repository ZIP file to your local machine and unzip it.
 2.  Start a terminal (e.g., Git Bash) on your local machine.
