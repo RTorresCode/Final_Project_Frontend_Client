@@ -18,7 +18,7 @@ const CampusView = (props) => {
                 <p>{campus.address}</p>
                 <p>{campus.description}</p>
                 <br />
-                <h3>There are no students at this campus.</h3>
+                <h3>There are no students at this campus</h3>
             </div>
         );
 
