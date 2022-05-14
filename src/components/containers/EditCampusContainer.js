@@ -1,105 +1,122 @@
-//import Header from './Header';
+
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 
 import EditCampusView from '../views/EditCampusView';
 import { editCampusThunk } from '../../store/thunks';
-import { fetchCampusThunk } from "../../store/thunks";
+
 
 class EditCampusContainer extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-          name: this.props.campus.name, 
-          address: this.props.campus.address, 
-          description: this.props.campus.description,
-          //imageUrl: this.props.campus.imageUrl,
-          redirect: false, 
-          redirectId: null
-        };
+  constructor(props) { 
+    super(props); 
+    this.state = {
+        name: "", 
+        address: "",
+        description: "",
+        imageUrl: "",
+        id: -1,
+        redirect: false, 
+        errorCaught: false,
     }
+  }
 
-    componentDidMount() {
-        //getting campus ID from url
-        this.props.fetchCampus(this.props.match.params.id);
-      }
+  componentDidMount() {
+    this.setState({name: this.props.campus.name, 
+        address: this.props.campus.address,
+        description: this.props.campus.description,
+        imageUrl: this.props.campus.imageUrl,
+        id: this.props.campus.id});  
+  }
+
+
     handleChange = event => {
-      this.setState({
-        [event.target.name]: event.target.value
-      });
+      const {name, value, type, checked} = event.target
+      type === "checkbox" ? this.setState({ [name]: checked }) : this.setState({ [name]: value })
     }
   
     handleSubmit = async event => {
-        event.preventDefault();
+      event.preventDefault();
 
-        let campus = {
-            name: this.state.name,
-            address: this.state.address,
-            description: this.state.description,
-            imageUrl: this.state.imageUrl,
-            id: this.props.campus.id //id or campusID
-        };
-
-        console.log("campus: ")
-        console.log(campus)
-
-        console.log("this.props.campus: ")
-        console.log(this.props.campus)
-
-        let newCampus = await this.props.editCampus(campus);
-
-        console.log("newCampus: ")
-        console.log(newCampus)
-
+      let new_info = { 
+        name: this.state.name,
+        description: this.state.description,
+        address: this.state.address,
+        imageUrl: this.state.imageUrl,
+        id: this.state.id
+      };
+      if (new_info.imageUrl === "") { 
+        delete new_info.imageUrl; 
+      }
+      try {
+        let campus = await this.props.editCampus(new_info)
+        console.log(campus.id); // Will catch this error if editCampus failed. 
+        alert(`${new_info.name}'s edit was saved.`); // Tell user
+        // Update state, and trigger redirect to show the new campus
         this.setState({
-            name: "", 
-            address: "", 
-            description: "",
-            imageUrl: 0,
-            redirect: true, 
-            redirectId: this.props.campus.id
-          });
+          name: "", 
+          address: "", 
+          description: "",
+          imageUrl: "",
+          redirect: true, 
+          id: -1
+        });
       }
+      catch(err) {  
+        console.error(err); 
+        alert("Error with edit! Please follow the Campus Information guidelines found below");
+        this.setState({
+          errorCaught: true 
+        });
+      }
+
+  }
+   
+  componentWillUnmount() {
+    this.setState({redirect: false, redirectId: null});
+  }
   
-      componentWillUnmount() {
-          this.setState({redirect: false, redirectId: null});
-      }
-
-      render() {
-
-        if(this.state.redirect) {
-          return (<Redirect to={`/campus/${this.state.redirectId}`}/>)
-        }
-        return (
-            
-            <EditCampusView 
-            campus={this.props.campus}
-            editCampus={this.props.editCampus}
-            deleteCampus={this.props.deleteCampus}
-            fetchCampus={this.props.fetchCampus}
-            handleChange = {this.handleChange} 
-            handleSubmit={this.handleSubmit}      
-          />
-        );
+  render() {
+    if(this.state.redirect) {
+      window.location.reload(); 
     }
-}
 
-const mapState = (state) => {
-    return {
-      campus: state.campus,
-    };
-  };
+    return (
+      <div>
+        <EditCampusView
+          handleChange = {this.handleChange} 
+          handleSubmit={this.handleSubmit}
+          campus={this.props.campus}  
+        />
+        {this.state.errorCaught ? (
+          <div>
+            <br />
+            <p>Campus name: Cannot be null.</p>
+            <p>Campus address: Cannot be null.</p>
+            <p>Campus Image: Should be a valid image link, or can be left blank.</p>
+            <p>Campus Description: Can be null.</p>
+          </div>
+        ) : (
+          null
+        )}
+      </div>          
+    );
+  }
+}
 
 const mapDispatch = (dispatch) => {
     return({
-        fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
-        editCampus: (campus) => dispatch(editCampusThunk(campus))
+        editCampus: (campus) => dispatch(editCampusThunk(campus)),
     })
 }
 
-export default connect(mapState, mapDispatch)(EditCampusContainer);
 
-  
+export default connect(null, mapDispatch)(EditCampusContainer);
+
+       
 
 
+
+
+
+
+        
