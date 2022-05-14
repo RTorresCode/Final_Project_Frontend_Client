@@ -14,8 +14,29 @@ class EditCampusContainer extends Component {
           name: this.props.campus.name, 
           address: this.props.campus.address, 
           description: this.props.campus.description,
-          imageUrl: this.props.campus.imageUrl,
+          //imageUrl: this.props.campus.imageUrl,
           redirect: false, 
           redirectId: null
         };
     }
+
+    componentDidMount() {
+        //getting campus ID from url
+        this.props.fetchCampus(this.props.match.params.id);
+      }
+    handleChange = event => {
+      this.setState({
+        [event.target.name]: event.target.value
+      });
+    }
+  
+    handleSubmit = async event => {
+        event.preventDefault();
+
+        let campus = {
+            name: this.state.name,
+            address: this.state.address,
+            description: this.state.description,
+            //imageUrl: this.state.imageUrl,
+            id: this.props.campus.id
+        };
