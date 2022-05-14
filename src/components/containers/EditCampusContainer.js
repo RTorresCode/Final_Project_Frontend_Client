@@ -1,7 +1,6 @@
 
 import { Component } from 'react';
 import { connect } from 'react-redux';
-
 import EditCampusView from '../views/EditCampusView';
 import { editCampusThunk } from '../../store/thunks';
 
@@ -49,9 +48,9 @@ class EditCampusContainer extends Component {
       }
       try {
         let campus = await this.props.editCampus(new_info)
-        console.log(campus.id); // Will catch this error if editCampus failed. 
-        alert(`${new_info.name}'s edit was saved.`); // Tell user
-        // Update state, and trigger redirect to show the new campus
+        console.log(campus.id); 
+        alert(`${new_info.name}'s edit was saved.`); 
+        
         this.setState({
           name: "", 
           address: "", 
@@ -63,7 +62,7 @@ class EditCampusContainer extends Component {
       }
       catch(err) {  
         console.error(err); 
-        alert("Error with edit! Please follow the Campus Information guidelines found below");
+        alert("Error with edit!");
         this.setState({
           errorCaught: true 
         });

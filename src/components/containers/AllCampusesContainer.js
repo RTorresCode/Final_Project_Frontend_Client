@@ -14,11 +14,24 @@ import { AllCampusesView } from "../views";
 import { deleteCampus } from '../../store/actions/actionCreators';
 
 class AllCampusesContainer extends Component {
+  constructor(props) { 
+    super(props); 
+    this.state = {
+        editor: false,
+    }
+  }
   // Get all campuses data from back-end database
   componentDidMount() {
-    console.log(this.props);
     this.props.fetchAllCampuses();
   }
+
+  toggleEdit = () => { // Function for editing on and off
+    let new_editor = !this.state.editor;
+    this.setState({
+      editor: new_editor 
+    });
+  }
+
 
   // Render All Campuses view by passing all campuses data as props to the corresponding View component
   render() {
@@ -28,6 +41,8 @@ class AllCampusesContainer extends Component {
         <AllCampusesView
           allCampuses={this.props.allCampuses}
           deleteCampus={this.props.deleteCampus}
+          toggleEdit={this.toggleEdit}
+          editing={this.state.editor}
         />
       </div>
     );
