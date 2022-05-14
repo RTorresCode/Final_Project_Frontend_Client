@@ -15,146 +15,90 @@ const useStyles = makeStyles( () => ({
   },
 }));
 
-
-
-
-
-
-
-
-
-
-
   const EditStudentView = (props) => {
     // console.log(props)
-    const { handleChange, handleSubmit } = props;
+    const { handleChange, handleSubmit, student } = props;
     const classes = useStyles();
   
     return (
-      <div className={classes.root}>
-        <AppBar position="static" elevation={0} className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" className={classes.title} color="#9ebe35">
-              Campus Manager
+      <div>
+        <br />
+        <div className={classes.formTitle}>
+            <Typography style={{fontWeight: 'bold', fontFamily: 'Courier, sans-serif', fontSize: '20px', color: '#11153e'}}>
+              Edit {student.firstname} {student.lastname}
             </Typography>
-  
-            <Link className={classes.links} to={"/"}>
-              <Button
-                variant="contained"
-                color="white"
-                style={{ marginRight: "10px", height: "60px", width: "200px" }}
-              >
-                Home
-              </Button>
-            </Link>
-  
-            <Link className={classes.links} to={"/campuses"}>
-              <Button
-                variant="contained"
-                color="white"
-                style={{ marginRight: "10px", height: "60px", width: "200px" }}
-              >
-                All Campuses
-              </Button>
-            </Link>
-  
-            <Link className={classes.links} to={"/students"}>
-              <Button
-                variant="contained"
-                color="white"
-                style={{ marginRight: "10px", height: "60px", width: "200px" }}
-              >
-                All Students
-              </Button>
-            </Link>
-          </Toolbar>
-        </AppBar>
-  
-        <div className={classes.formContainer}>
-          <div className={classes.formTitle}>
-            <Typography
-              style={{
-                fontWeight: "bold",
-                fontFamily: "Courier, sans-serif",
-                fontSize: "20px",
-                color: "#11153e",
-              }}
-            >
-              Edit Student
-            </Typography>
-          </div>
-          <form style={{ textAlign: "center" }} onSubmit={(e) => handleSubmit(e)}>
-            <label style={{ color: "#11153e", fontWeight: "bold" }}>
-              First Name:{" "}
-            </label>
-            <input
-              type="text"
-              name="firstname"
-              onChange={(e) => handleChange(e)}
-              defaultValue={props.student.firstname}
-              required
-            />
-            <br />
-            <br />
-  
-            <label style={{ color: "#11153e", fontWeight: "bold" }}>
-              Last Name:{" "}
-            </label>
-            <input
-              type="text"
-              name="lastname"
-              onChange={(e) => handleChange(e)}
-              defaultValue={props.student.lastname}
-              required
-            />
-            <br />
-            <br />
-  
-            <label style={{ color: "#11153e", fontWeight: "bold" }}>
-              campusId:{" "}
-            </label>
-            <input
-              type="text"
-              name="campusId"
-              onChange={(e) => handleChange(e)}
-              defaultValue={props.student.campusId}
-            />
-            <br />
-            <br />
-  
-            <label style={{ color: "#11153e", fontWeight: "bold" }}>
-              Email:{" "}
-            </label>
-            <input
-              type="text"
-              name="email"
-              onChange={(e) => handleChange(e)}
-              defaultValue={props.student.email}
-              required
-            />
-            <br />
-            <br />
-  
-            <label style={{ color: "#11153e", fontWeight: "bold" }}>GPA: </label>
-            <input
-              type="double"
-              name="gpa"
-              onChange={(e) => handleChange(e)}
-              defaultValue={props.student.gpa}
-              required
-            />
-            <br />
-            <br />
-  
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
-            <br />
-            <br />
-          </form>
         </div>
-      </div>
-    );
-  };
-  
-  export default EditStudentView;
+        {}  
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <label style= {{color:'#11153e', fontWeight: 'bold'}}>First Name: </label>
+          <input 
+          type="text" 
+          name="firstname"
+          placeholder='Student First Name' 
+          defaultValue={student.firstname} 
+          onChange={(e) => handleChange(e)} 
+          />
+          <br/>
+          <label style= {{color:'#11153e', fontWeight: 'bold'}}>Last Name: </label>
+          <input 
+          type="text" 
+          name="lastname"
+          placeholder="Student's Last Name"
+          defaultValue={student.lastname}
+          onChange={(e) => handleChange(e)}  
+          />
+          <br/>
+          <label style= {{color:'#11153e', fontWeight: 'bold'}}>Email: </label>
+          <input 
+          type="text" 
+          name="email"
+          placeholder="Email"
+          defaultValue={student.email}
+          onChange={(e) => handleChange(e)}  
+          />
+          <br/>
+          <label style= {{color:'#11153e', fontWeight: 'bold'}}>GPA: </label>
+          <input 
+          type="text" 
+          name="gpa"
+          placeholder="GPA"
+          defaultValue={student.gpa}
+          onChange={(e) => handleChange(e)}  
+          />
+          <br/>
+          <label style= {{color:'#11153e', fontWeight: 'bold'}}>Image: </label>
+          <input 
+          type="text" 
+          name="imageUrl"
+          placeholder='Profile Picture'
+          defaultValue={student.imageUrl}
+          onChange={(e) => handleChange(e)}  
+          />
+          <br/>
+          <label style= {{color:'#11153e', fontWeight: 'bold'}}>Campus ID: </label>
+          <input 
+          type="text" 
+          name="campusId"
+          placeholder="ID of Student's School"
+          defaultValue={student.campusId}
+          onChange={(e) => handleChange(e)}  
+          />
+          <br/>
+          <br />
+          <Button variant="contained" color="primary" type="submit">
+            Save Student Edit
+          </Button>
+        </form>
+    </div>
+  )
+}
+
+export default EditStudentView;
+
+
+
+      
+      
+      
+      
+ 
