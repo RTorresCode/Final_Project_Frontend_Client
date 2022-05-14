@@ -68,6 +68,7 @@ export const editCampusThunk = campus => async dispatch => {  // The THUNK
         let updatedCampus = await axios.put(`/api/campuses/${campus.id}`, campus);
         // Update successful so change state with dispatch
         dispatch(ac.editCampus(updatedCampus));
+        return updatedCampus.data;
     } catch (err) {
         console.error(err);
     }
@@ -137,6 +138,7 @@ export const editStudentThunk = student => async dispatch => {  // The THUNK
     let updatedStudent = await axios.put(`/api/students/${student.id}`, student); 
     // Update successful so change state with dispatch
     dispatch(ac.editStudent(updatedStudent));
+    return updatedStudent.data;
   } catch(err) {
     console.error(err);
   }
