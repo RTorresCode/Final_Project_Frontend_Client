@@ -1,5 +1,6 @@
 # Final_Project_Frontend_Client
 Frontend client code for CSCI 39548 final project (Spring '22)
+A fullstack CRUD application using React, Redux, Node, Express, PostgreSQL and Sequelize. Demonstrates basic fullstack capabilities.
 
 ## Group members
 Ramon Torres - Mightywise <br/>
