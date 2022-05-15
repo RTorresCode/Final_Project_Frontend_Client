@@ -1,10 +1,10 @@
 # Final_Project_Frontend_Client
-Frontend client code for CSCI 39548 final project (Spring '22)</br>
-A fullstack CRUD application using React, Redux, Node, Express, PostgreSQL and Sequelize. Demonstrates basic fullstack capabilities.
+- Frontend client code for CSCI 39548 final project (Spring '22)</br>
+- A fullstack CRUD application using React, Redux, Node, Express, PostgreSQL and Sequelize. Demonstrates basic fullstack capabilities.
 
 ## Group members
-Ramon Torres - Mightywise <br/>
-Tahmina Munni - TahminaM
+- Ramon Torres - Mightywise <br/>
+- Tahmina Munni - TahminaM
 
 ### Use the following steps to set up and run the client (front-end) application on your local machine
 1.	Download the GitHub repository ZIP file to your local machine and unzip it.
@@ -44,4 +44,4 @@ can navigate to a single student view, and
 - [x] navigate to single campus view of the student’s enrolled campus
 - [x] delete the student
 - [x] edit the student’s information (including campus s/he is enrolled at)
-  - [x] with a validated form displaying real-time error messages
+- [x] with a validated form displaying real-time error messages
