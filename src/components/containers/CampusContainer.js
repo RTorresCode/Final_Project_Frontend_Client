@@ -8,23 +8,48 @@ If needed, it also defines the component's "connect" function.
 import Header from './Header';
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchCampusThunk } from "../../store/thunks";
+import { fetchCampusThunk,
+         deleteCampusThunk,
+         deleteStudentThunk,
+         editStudentThunk, 
+         fetchAllStudentsThunk
+        } from "../../store/thunks";
 
 import { CampusView } from "../views";
 
 class CampusContainer extends Component {
+  constructor(props) { //initialize state
+    super(props); 
+    this.state = {
+        editor: false,
+    }
+  }
   // Get the specific campus data from back-end database
   componentDidMount() {
     // Get campus ID from URL (API link)
     this.props.fetchCampus(this.props.match.params.id);
+    this.props.fetchAllStudents(); 
   }
 
+  toggleEdit = () => {
+    let new_editor = !this.state.editor;
+    this.setState({
+      editor: new_editor // Function to switch editing on and off
+    });
+  }
   // Render a Campus view by passing campus data as props to the corresponding View component
   render() {
     return (
       <div>
         <Header />
-        <CampusView campus={this.props.campus} />
+        <CampusView 
+        campus={this.props.campus} 
+        deleteCampus={this.props.deleteCampus}
+        deleteStudent={this.props.deleteStudent}
+        toggleEdit={this.toggleEdit}
+        editing={this.state.editor} 
+      
+        />
       </div>
     );
   }
@@ -43,6 +68,8 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
+    deleteCampus: (id) => dispatch(deleteCampusThunk(id)),
+    deleteStudent: (id) => dispatch(deleteStudentThunk(id))
   };
 };
 
