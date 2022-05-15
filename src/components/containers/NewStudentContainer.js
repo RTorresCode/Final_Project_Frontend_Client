@@ -23,6 +23,9 @@ class NewStudentContainer extends Component {
       email: "",
       campusId: null, 
       redirect: false, 
+      imageUrl: "",
+      gpa: null,
+      errorCaught: false,
       redirectId: null
     };
   }
@@ -42,20 +45,37 @@ class NewStudentContainer extends Component {
         firstname: this.state.firstname,
         lastname: this.state.lastname,
         email: this.state.email,
-        campusId: this.state.campusId
+        campusId: this.state.campusId,
+        gpa: this.state.gpa,
+        imageUrl: this.state.imageUrl,
     };
-    
-    // Add new student in back-end database
-    let newStudent = await this.props.addStudent(student);
+    if (student.imageUrl === "") { 
+      delete student.imageUrl; 
+    }
 
+
+    // Add new student in back-end database
+    await this.props.addStudent(student)
+      .then(newStudent => {
+        console.log(newStudent);
     // Update state, and trigger redirect to show the new student
-    this.setState({
-      firstname: "", 
-      lastname: "",
-      email: "",
-      campusId: null, 
-      redirect: true, 
-      redirectId: newStudent.id
+      this.setState({
+        firstname: "", 
+        lastname: "",
+        email: "",
+        campusId: null, 
+        redirect: true, 
+        gpa: this.state.gpa,
+        imageUrl: "",
+        redirectId: newStudent.id
+      });
+    })
+    .catch(err => { // If errors doing the above, then: 
+      console.error(err); // Output error and give alert to new information at bottom of page
+      alert("Error with add! Please follow the Student Information guidelines found at the bottom of the page");
+      this.setState({
+        errorCaught: true // Tell react to render new thing
+      });
     });
   }
 
@@ -79,6 +99,18 @@ class NewStudentContainer extends Component {
           handleChange = {this.handleChange} 
           handleSubmit={this.handleSubmit}      
         />
+        {this.state.errorCaught ? (
+          <div>
+            <br />
+            <p>Student First and Last names: Cannot be null.</p>
+            <p>Student's Campus ID: Must be a valid  and actual campus ID of a school within this database.</p>
+            <p>Student Email: Must contain @ symbol, and be in standard email format, cannot be null.</p>
+            <p>Student Image: Should be a valid image link, or can be left blank.</p>
+            <p>Student GPA: Must be between 0.0 and 4.0.</p>
+          </div>
+        ) : (
+          null
+        )}
       </div>          
     );
   }

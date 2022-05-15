@@ -22,7 +22,9 @@ class NewCampusContainer extends Component {
             address: "",
             description: "",
             redirect: false,
-            redirectId: null
+            redirectId: null,
+            imageUrl: "",
+            errorCaught: false
         };
     }
 
@@ -40,11 +42,17 @@ class NewCampusContainer extends Component {
         let campus = {
             name: this.state.name,
             address: this.state.address,
-            description: this.state.description
+            description: this.state.description,
+            imageUrl: this.state.imageUrl,
         };
+        if (campus.imageUrl === "") { 
+            delete campus.imageUrl; 
+        }
 
         // Add new campus in back-end database
-        let newCampus = await this.props.addCampus(campus);
+        await this.props.addCampus(campus)
+        .then(newCampus => {
+            console.log(newCampus);
 
         // Update state, and trigger redirect to show the new campus
         this.setState({
@@ -52,8 +60,18 @@ class NewCampusContainer extends Component {
             address: "",
             description: "",
             redirect: true,
-            redirectId: newCampus.id
+            redirectId: newCampus.id,
+            imageUrl: ""
         });
+        })
+        .catch(err => { // If errors doing the above, then: 
+         console.error(err); // Output error and give alert to new information at bottom of page
+         alert("Error with add! Please follow the Campus Information guidelines found at the bottom of the page");
+         this.setState({
+          errorCaught: true // Tell react to render new thing
+        });
+      });
+        
     }
 
     // Unmount when the component is being removed from the DOM:
@@ -76,7 +94,18 @@ class NewCampusContainer extends Component {
                     handleChange={this.handleChange}
                     handleSubmit={this.handleSubmit}
                 />
+                {this.state.errorCaught ? (
+            <div>
+                <br />
+                <p>Campus name: Cannot be null.</p>
+                <p>Campus address: Cannot be null.</p>
+                <p>Campus Image: Should be a valid image link, or can be left blank.</p>
+                <p>Campus Description: Can be null.</p>
             </div>
+        ) : (
+          null
+        )}
+        </div>
         );
     }
 }
