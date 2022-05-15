@@ -11,8 +11,6 @@ import { connect } from "react-redux";
 import { fetchCampusThunk,
          deleteCampusThunk,
          deleteStudentThunk,
-         editStudentThunk, 
-         fetchAllStudentsThunk
         } from "../../store/thunks";
 
 import { CampusView } from "../views";
