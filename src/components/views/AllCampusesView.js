@@ -18,7 +18,7 @@ const AllCampusesView = (props) => {
     <Link to={`/newcampus`}>
       <button>Add New Campus</button>
     </Link>  
-    </div>;
+    </div>
   }
 
   // If there is at least one campus, render All Campuses view 
@@ -36,7 +36,7 @@ const AllCampusesView = (props) => {
       )}
       <br/><br/>
 
-      {allCampuses.map((campus) => (
+      {allcampuses.map((campus) => (
         <div key={campus.id}>
           <Link to={`/campus/${campus.id}`}>
             <h2>{campus.name}</h2>
