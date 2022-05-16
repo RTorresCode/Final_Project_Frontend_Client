@@ -17,8 +17,7 @@
 
 As a user I:
 - [x] will land on a visually pleasing homepage by default, which allows navigation to view all campuses and all students
-
-can navigate to all campuses view, and
+  can navigate to all campuses view, and
 - [x] see a list of all campuses in the database
 - [x] see an informative message if no campuses exist
 - [x] add a new campus
