@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { EditCampusContainer } from "../containers/index"
 
 const AllCampusesView = (props) => {
-  const {allcampuses, deleteCampus , toggleEdit, editing} = props;
+  const {allCampuses, deleteCampus , toggleEdit, editing} = props;
 
   // If there is no campus, display a message.
     if (!props.allCampuses.length) {
@@ -18,7 +18,7 @@ const AllCampusesView = (props) => {
     <Link to={`/newcampus`}>
       <button>Add New Campus</button>
     </Link>  
-    </div>;
+    </div>
   }
 
   // If there is at least one campus, render All Campuses view 
