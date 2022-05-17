@@ -7,12 +7,12 @@ It constructs a React component to display the single student view page.
 import { Link } from "react-router-dom";
 
 const StudentView = (props) => {const { student, editing, toggleEdit, deleteStudent} = props;
-      if (student.gpa !== null) { 
-        let gpa = student.gpa 
-        if (gpa % 1 === 0) { 
-          gpa = gpa.toFixed(1); 
-        }
-      }
+    //if (student.gpa !== null) {
+    //    let gpa = student.gpa.toFixed(1);
+    //    if (gpa % 1 === 0) { 
+    //      gpa = gpa.toFixed(1); 
+    //    }
+    //}
       return (
           <div>
               <h1>{student.firstname + " " + student.lastname}</h1>

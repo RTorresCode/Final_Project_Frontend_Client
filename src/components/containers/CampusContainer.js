@@ -10,7 +10,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchCampusThunk,
          deleteCampusThunk,
-         deleteStudentThunk,
+         //deleteStudentThunk,
         } from "../../store/thunks";
 
 import { CampusView } from "../views";
@@ -26,7 +26,7 @@ class CampusContainer extends Component {
   componentDidMount() {
     // Get campus ID from URL (API link)
     this.props.fetchCampus(this.props.match.params.id);
-    this.props.fetchAllStudents(); 
+    //this.props.fetchAllStudents(); 
   }
 
   toggleEdit = () => {
@@ -43,7 +43,6 @@ class CampusContainer extends Component {
         <CampusView 
         campus={this.props.campus} 
         deleteCampus={this.props.deleteCampus}
-        deleteStudent={this.props.deleteStudent}
         toggleEdit={this.toggleEdit}
         editing={this.state.editor} 
       
