@@ -85,7 +85,12 @@ class EditStudentContainer extends Component {
   }
 }
 
-
+const mapState = (state) => {
+  return {
+    student: state.student,
+    allCampuses: state.allCampuses,  
+  };
+};
     
 
     
