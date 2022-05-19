@@ -92,5 +92,12 @@ const mapState = (state) => {
   };
 };
     
+const mapDispatch = (dispatch) => {
+  return {
+    fetchStudent: (id) => dispatch(fetchStudentThunk(id)),
+    editStudent: (student) => dispatch(editStudentThunk(student)),
+    fetchAllCampuses: () => dispatch(fetchAllCampusesThunk()),
+  };
+};
 
-    
+export default connect(mapState, mapDispatch)(EditStudentContainer);    
