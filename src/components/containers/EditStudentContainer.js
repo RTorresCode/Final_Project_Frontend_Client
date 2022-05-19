@@ -32,7 +32,20 @@ class EditStudentContainer extends Component {
       redirect: false
     };
   }
+  handleChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+  handleSubmit = async event => {
+    event.preventDefault();  
     
+    if(!(this.props.allCampuses.map(({id}) => id)).includes(parseInt(this.state.campusId))){
+      alert("Please enter a valid campusId.")
+      this.setState({
+        redirect: false
+      })
+    }    
 
     
 
