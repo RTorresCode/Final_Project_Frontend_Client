@@ -18,13 +18,7 @@ const useStyles = makeStyles(() => ({
         backgroundColor: '#11153e',
         shadows: ['none'],
     },
-    formTitle:{
-        backgroundColor:'#c5c8d6',
-        marginBottom: '15px',
-        textAlign: 'center',
-        borderRadius: '5px 5px 0px 0px',
-        padding: '3px'
-    },
+    
  }));
 
   const EditCampusView = (props) => {
