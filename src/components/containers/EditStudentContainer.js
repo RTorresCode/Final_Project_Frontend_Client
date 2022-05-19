@@ -45,7 +45,46 @@ class EditStudentContainer extends Component {
       this.setState({
         redirect: false
       })
-    }    
+    } 
+    else{
+      let student = this.state.student
+      student.firstname = this.state.firstname
+      student.lastname = this.state.lastname
+      student.campusId = this.state.campusId
+      student.imageURL = this.state.imageURL
+      student.gpa = this.state.gpa
+      student.email = this.state.email
+ 
+      await this.props.editStudent(student);
+
+      this.setState({
+        firstname: '', 
+        lastname: '', 
+        campusId: '', 
+        email: '',
+        imageURL: '',
+        gpa: '',
+        redirect: true
+      });
+    }
+  }
+  render() {
+    if(this.state.redirect) {
+      return (<Redirect to={`/student/${this.props.match.params.id}`}/>)
+    }
+    return (
+      <div>
+        <Header />
+        <EditStudentView student={this.props.student} 
+        handleChange = {this.handleChange} 
+        handleSubmit={this.handleSubmit}
+        allCampuses={this.props.allCampuses}
+        />
+      </div>
+    );
+  }
+}
+
 
     
 
