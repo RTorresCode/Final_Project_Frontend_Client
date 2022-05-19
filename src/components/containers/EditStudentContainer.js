@@ -50,7 +50,7 @@ class EditStudentContainer extends Component {
         campusId: this.state.campusId,
         id: this.state.id
       };
-      if (new_info.imageUrl === "") { 
+      if (new_info.imageUrl !== "") { 
       }
   
       

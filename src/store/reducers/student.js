@@ -18,11 +18,7 @@ const student = (state=initialState, action) => {  // Use "initialState" as defa
     case at.FETCH_STUDENT:
       return action.payload;
     case at.EDIT_STUDENT:
-      return state.map(student => { 
-        return (
-          student.id===action.payload.id ? action.payload : student
-        );
-      });
+      return (state.id===action.payload.id ? action.payload : state);
     default:
       // If the Reducer doesn't recognize the Action Type, returns the previous (current) State unchanged.
       return state;
