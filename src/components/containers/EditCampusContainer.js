@@ -12,23 +12,18 @@ class EditCampusContainer extends Component {
   constructor(props) { 
     super(props); 
     this.state = {
-        name: "", 
-        address: "",
-        description: "",
-        imageUrl: "",
-        id: -1,
-        redirect: false, 
-        errorCaught: false,
+      name: this.props.campus.name, 
+      imageUrl: this.props.campus.imageUrl,
+      address: this.props.campus.address, 
+      description: this.props.campus.description, 
+      redirect: false, 
+      redirectId: null
     }
   }
 
   componentDidMount() {
-    this.setState({name: this.props.campus.name, 
-        address: this.props.campus.address,
-        description: this.props.campus.description,
-        imageUrl: this.props.campus.imageUrl,
-        id: this.props.campus.id});  
-  }
+    this.props.fetchCampus(this.props.match.params.id);
+}
 
 
     handleChange = event => {
