@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles( () => ({
-  formTitle:{
+formTitle:{
     backgroundColor:'#c5c8d5',
     marginBottom: '15px',
     marginLeft: '28%',
@@ -12,6 +12,22 @@ const useStyles = makeStyles( () => ({
     padding: '3px',
     width: '40%', 
   },
+  formContainer:{  
+    width: '500px',
+    backgroundColor: '#f0f0f5',
+    borderRadius: '5px',
+    margin: 'auto',
+},
+title: {
+    flexGrow: 1,
+    textAlign: 'left',
+    textDecoration: 'none'
+}, 
+customizeAppBar:{
+    backgroundColor: '#11153e',
+    shadows: ['none'],
+},
+
 }));
 
   const EditStudentView = (props) => {
