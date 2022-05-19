@@ -2,7 +2,6 @@ import Header from './Header';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-
 import EditCampusView from '../views/EditCampusView';
 import { editCampusThunk } from '../../store/thunks';
 import { fetchCampusThunk } from "../../store/thunks";
@@ -52,100 +51,38 @@ handleSubmit = async event => {
           redirect: true
         });      
     }
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-handleSubmit = async event => {
-      event.preventDefault();
-
-      let new_info = { 
-        name: this.state.name,
-        description: this.state.description,
-        address: this.state.address,
-        imageUrl: this.state.imageUrl,
-        id: this.state.id
-      };
-      if (new_info.imageUrl === "") { 
-        delete new_info.imageUrl; 
+    render() {
+      if(this.state.redirect) {
+        return (<Redirect to={`/campus/${this.props.match.params.id}`}/>)
       }
-      try {
-        let campus = await this.props.editCampus(new_info)
-        console.log(campus.id); 
-        alert(`${new_info.name}'s edit was saved.`); 
-        
-        this.setState({
-          name: "", 
-          address: "", 
-          description: "",
-          imageUrl: "",
-          redirect: true, 
-          id: -1
-        });
-      }
-      catch(err) {  
-        console.error(err); 
-        alert("Error with edit!");
-        this.setState({
-          errorCaught: true 
-        });
-      }
-
-  }
-   
-  componentWillUnmount() {
-    this.setState({redirect: false, redirectId: null});
-  }
-  
-  render() {
-    if(this.state.redirect) {
-      window.location.reload(); 
-    }
-
-    return (
-      <div>
-        <EditCampusView
+      return (
+        <div>
+          <Header />
+          <EditCampusView campus={this.props.campus}
           handleChange = {this.handleChange} 
           handleSubmit={this.handleSubmit}
-          campus={this.props.campus}  
-        />
-        {this.state.errorCaught ? (
-          <div>
-            <br />
-            <p>Campus name: Cannot be null.</p>
-            <p>Campus address: Cannot be null.</p>
-            <p>Campus Image: Should be a valid image link, or can be left blank.</p>
-            <p>Campus Description: Can be null.</p>
-          </div>
-        ) : (
-          null
-        )}
-      </div>          
-    );
+          allStudents={this.props.allStudents}
+          />
+        </div>
+      );
+    }
   }
-}
+  
+  const mapState = (state) => {
+    return {
+      campus: state.campus,
+      allStudents: state.allStudents
+    };
+  };
+  const mapDispatch = (dispatch) => {
+    return {
+      fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
+      editCampus: (campus) => dispatch(editCampusThunk(campus)),
+      fetchAllStudents: () => dispatch(fetchAllStudentsThunk())
+    };
+  };
 
-const mapDispatch = (dispatch) => {
-    return({
-        editCampus: (campus) => dispatch(editCampusThunk(campus)),
-    })
-}
-
-
-export default connect(null, mapDispatch)(EditCampusContainer);
-
+  export default connect(mapState, mapDispatch)(EditCampusContainer);
        
 
 
