@@ -26,12 +26,49 @@ class EditCampusContainer extends Component {
 }
 
 
-    handleChange = event => {
-      const {name, value, type, checked} = event.target
-      type === "checkbox" ? this.setState({ [name]: checked }) : this.setState({ [name]: value })
-    }
+handleChange = event => {
+  this.setState({
+      [event.target.name]: event.target.value
+  });
+  console.log("changes have been made");
+}
   
-    handleSubmit = async event => {
+    
+handleSubmit = async event => {
+  event.preventDefault(); 
+
+  let campus = this.state.campus
+        campus.name = this.state.name
+        campus.address = this.state.address
+        campus.imageUrl = this.state.imageUrl
+        campus.description = this.state.description
+        
+        await this.props.editCampus(campus);
+        this.setState({
+          name: '',
+          address: '',
+          imageUrl: '',
+          description: '',
+          redirect: true
+        });      
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+handleSubmit = async event => {
       event.preventDefault();
 
       let new_info = { 
