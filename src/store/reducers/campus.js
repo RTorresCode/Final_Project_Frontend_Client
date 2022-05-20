@@ -18,11 +18,7 @@ const campus = (state = initialState, action) => {  // Use "initialState" as def
     case at.FETCH_CAMPUS:
       return action.payload;
     case at.EDIT_CAMPUS://
-      return state.map(campus => { 
-        return (
-          campus.id===action.payload.id ? action.payload : campus
-        );
-      });
+      return (state.id===action.payload.id ? action.payload : state);
     default:
       // If the Reducer doesn't recognize the Action Type, returns the previous (current) State unchanged.
       return state;
