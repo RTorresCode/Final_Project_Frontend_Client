@@ -6,6 +6,7 @@ passes data (if any) as props to the corresponding View component.
 If needed, it also defines the component's "connect" function.
 ================================================== */
 import Header from './Header';
+import { Redirect } from 'react-router-dom'
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchCampusThunk,
@@ -19,7 +20,7 @@ class CampusContainer extends Component {
   constructor(props) { //initialize state
     super(props); 
     this.state = {
-        editor: false,
+        studRedirect: false,
     }
   }
   // Get the specific campus data from back-end database
@@ -28,25 +29,20 @@ class CampusContainer extends Component {
     this.props.fetchCampus(this.props.match.params.id);
     //this.props.fetchAllStudents(); 
   }
-
-  toggleEdit = () => {
-    let new_editor = !this.state.editor;
+  handleDelete = async campusId => {
+    await this.props.deleteCampus(campusId);
     this.setState({
-      editor: new_editor // Function to switch editing on and off
-    });
+      studRedirect: true
+    })
   }
+  
   // Render a Campus view by passing campus data as props to the corresponding View component
   render() {
     return (
+      this.state.studRedirect ? <Redirect to={`/campuses`}/> :
       <div>
         <Header />
-        <CampusView 
-        campus={this.props.campus} 
-        deleteCampus={this.props.deleteCampus}
-        toggleEdit={this.toggleEdit}
-        editing={this.state.editor} 
-      
-        />
+        <CampusView handleDelete={this.handleDelete} campus={this.props.campus} />
       </div>
     );
   }
@@ -65,7 +61,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
-    deleteCampus: (id) => dispatch(deleteCampusThunk(id)),
+    deleteCampus: (campusId) => dispatch(deleteCampusThunk(campusId)),
   };
 };
 

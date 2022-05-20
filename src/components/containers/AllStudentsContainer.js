@@ -18,22 +18,10 @@ import {
 import AllStudentsView from '../views/AllStudentsView';
 
 class AllStudentsContainer extends Component {
-  constructor(props) { 
-    super(props); 
-    this.state = {
-        editor: false,
-    }
-  }
   // Get all students data from back-end database
   componentDidMount() {
     this.props.fetchAllStudents();
-  }
-
-  toggleEdit = () => {
-    let new_editor = !this.state.editor;
-    this.setState({
-      editor: new_editor 
-    });
+    window.scrollTo(0,0);
   }
 
 
@@ -45,8 +33,7 @@ class AllStudentsContainer extends Component {
         <AllStudentsView 
           students={this.props.allStudents}
           deleteStudent={this.props.deleteStudent}   
-          toggleEdit={this.toggleEdit}
-          editing={this.state.editor}
+          editStudent={this.props.editStudent}  
         />
       </div>
     )

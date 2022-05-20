@@ -9,9 +9,9 @@ import Header from './Header';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-
 import NewStudentView from '../views/NewStudentView';
 import { addStudentThunk } from '../../store/thunks';
+import { fetchAllCampusesThunk } from "../../store/thunks";
 
 class NewStudentContainer extends Component {
   // Initialize state
@@ -25,9 +25,12 @@ class NewStudentContainer extends Component {
       redirect: false, 
       imageUrl: "",
       gpa: null,
-      errorCaught: false,
+      errorMsg: null,
       redirectId: null
     };
+  }
+  componentDidMount() {
+    this.props.fetchAllCampuses();
   }
 
   // Capture input data when it is entered
@@ -41,43 +44,52 @@ class NewStudentContainer extends Component {
   handleSubmit = async event => {
     event.preventDefault();  // Prevent browser reload/refresh after submit.
 
-    let student = {
+    let contSubmit = false;
+    let formCampusId = this.state.campusId;
+
+    if(!formCampusId) {
+      contSubmit = true;
+      formCampusId = null;
+  }
+
+    if(!contSubmit) {
+      for(let i of this.props.allCampuses) {
+        if(i.id === this.state.campusId) {
+          contSubmit = true;
+          break;
+        }
+      }
+    }
+    if(!contSubmit) {
+      this.setState({
+        errorMsg: "Invalid Campus ID: Campus does not exist"
+      });
+    }
+    else {
+      let student = {
         firstname: this.state.firstname,
         lastname: this.state.lastname,
+        campusId: formCampusId,
         email: this.state.email,
-        campusId: this.state.campusId,
-        gpa: this.state.gpa,
         imageUrl: this.state.imageUrl,
-    };
-    if (student.imageUrl === "") { 
-      delete student.imageUrl; 
-    }
+        gpa: this.state.gpa
+      };
 
+      // Add new student in back-end database
+      let newStudent = await this.props.addStudent(student);
 
-    // Add new student in back-end database
-    await this.props.addStudent(student)
-      .then(newStudent => {
-        console.log(newStudent);
-    // Update state, and trigger redirect to show the new student
+      // Update state, and trigger redirect to show the new student
       this.setState({
         firstname: "", 
-        lastname: "",
+        lastname: "", 
+        campusId: null,
         email: "",
-        campusId: null, 
         redirect: true, 
-        gpa: this.state.gpa,
-        imageUrl: "",
         redirectId: newStudent.id
       });
-    })
-    .catch(err => { // If errors doing the above, then: 
-      console.error(err); // Output error and give alert to new information at bottom of page
-      alert("Error with add! Please follow the Student Information guidelines found at the bottom of the page");
-      this.setState({
-        errorCaught: true // Tell react to render new thing
-      });
-    });
+    }
   }
+
 
   // Unmount when the component is being removed from the DOM:
   componentWillUnmount() {
@@ -88,7 +100,7 @@ class NewStudentContainer extends Component {
   render() {
     // Redirect to new student's page after submit
     if(this.state.redirect) {
-      return (<Redirect to={`/student/${this.state.redirectId}`}/>)
+      return (<Redirect to={`/students/${this.state.redirectId}`}/>)
     }
 
     // Display the input form via the corresponding View component
@@ -97,20 +109,9 @@ class NewStudentContainer extends Component {
         <Header />
         <NewStudentView 
           handleChange = {this.handleChange} 
-          handleSubmit={this.handleSubmit}      
-        />
-        {this.state.errorCaught ? (
-          <div>
-            <br />
-            <p>Student First and Last names: Cannot be null.</p>
-            <p>Student's Campus ID: Must be a valid  and actual campus ID of a school within this database.</p>
-            <p>Student Email: Must contain @ symbol, and be in standard email format, cannot be null.</p>
-            <p>Student Image: Should be a valid image link, or can be left blank.</p>
-            <p>Student GPA: Must be between 0.0 and 4.0.</p>
-          </div>
-        ) : (
-          null
-        )}
+          handleSubmit={this.handleSubmit}  
+          errorMsg={this.state.errorMsg}        
+        />      
       </div>          
     );
   }
@@ -122,10 +123,17 @@ class NewStudentContainer extends Component {
 const mapDispatch = (dispatch) => {
     return({
         addStudent: (student) => dispatch(addStudentThunk(student)),
+        fetchAllCampuses: () => dispatch(fetchAllCampusesThunk()),
     })
 }
+
+const mapState = (state) => {
+  return {
+    allCampuses: state.allCampuses,  // Get the State object from Reducer "allCampuses"
+  };
+};
 
 // Export store-connected container by default
 // NewStudentContainer uses "connect" function to connect to Redux Store and to read values from the Store 
 // (and re-read the values when the Store State updates).
-export default connect(null, mapDispatch)(NewStudentContainer);
+export default connect(mapState, mapDispatch)(NewStudentContainer);

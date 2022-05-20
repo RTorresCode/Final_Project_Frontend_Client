@@ -9,76 +9,119 @@ import { fetchAllCampusesThunk } from "../../store/thunks";
 
 
 class EditStudentContainer extends Component {
-  componentDidMount() {
+  // componentDidMount() {
     
-    this.props.fetchStudent(this.props.match.params.id);
-    this.props.fetchAllCampuses();
-  }
+  //   this.props.fetchStudent(this.props.match.params.id);
+  //   this.props.fetchAllCampuses();
+  // }
 
   constructor(props){
     super(props);
-    
-    let student = this.props.student
 
     this.state = {
-      student: student,
-      firstname: student.firstname,
-      lastname: student.lastname,
-      campusId: student.campusId,
-      imageURL: student.imageURL,
-      gpa: student.gpa,
-      email: student.email,
-      studentId: student.id, 
-      redirect: false
+      firstname: "", 
+      lastname: "", 
+      campusId: null,
+      email: "",
+      imageUrl: null,
+      gpa: null,
+      redirect: false, 
+      redirectId: null,
+      errorMsg: null
     };
   }
+
+  componentDidMount() {
+    //getting student ID from url
+    this.props.fetchAllCampuses();
+    this.handleInit(this.props.match.params.id);
+  }
+
+  handleInit = async studentId => {
+    await this.props.fetchStudent(studentId);
+    this.setState({
+        firstname: this.props.student.firstname,
+        lastname: this.props.student.lastname, 
+        campusId: this.props.student.campusId,
+        email: this.props.student.email,
+        imageUrl: this.props.student.imageUrl,
+        gpa: this.props.student.gpa,
+        redirectId: this.props.student.id
+    });
+  }
+
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
     });
   }
-  handleSubmit = async event => {
-    event.preventDefault();  
-    
-    if(!(this.props.allCampuses.map(({id}) => id)).includes(parseInt(this.state.campusId))){
-      alert("Please enter a valid campusId.")
-      this.setState({
-        redirect: false
-      })
-    } 
-    else{
-      let student = this.state.student
-      student.firstname = this.state.firstname
-      student.lastname = this.state.lastname
-      student.campusId = this.state.campusId
-      student.imageURL = this.state.imageURL
-      student.gpa = this.state.gpa
-      student.email = this.state.email
- 
-      await this.props.editStudent(student);
 
+  handleSubmit = async event => {
+    event.preventDefault();
+
+    let contSubmit = false;
+    let formCampusId = this.state.campusId;
+
+
+    if(!formCampusId) {
+        contSubmit = true;
+        formCampusId = null;
+    }
+
+    if(!contSubmit) {
+        for(let i of this.props.allCampuses) {
+            if(i.id === this.state.campusId) {
+                contSubmit = true;
+                break;
+            }
+        }
+    }
+    if(!contSubmit) {
+        this.setState({
+            errorMsg: "Invalid Campus ID!"
+        });
+    }
+    else {
+        let student = {
+            firstname: this.state.firstname,
+            lastname: this.state.lastname,
+            campusId: formCampusId,
+            email: this.state.email,
+            imageUrl: this.state.imageUrl,
+            gpa: this.state.gpa,
+            id: this.state.redirectId
+        };
+      
+      // Update student in back-end database
+      await this.props.editStudent(student);
+      // Update state, and trigger redirect to updated student
       this.setState({
         firstname: '', 
         lastname: '', 
-        campusId: '', 
+        campusId: null, 
         email: '',
-        imageURL: '',
-        gpa: '',
         redirect: true
       });
     }
   }
+
+  componentWillUnmount() {
+    this.setState({redirect: false, redirectId: null});
+  }
+
+
   render() {
     if(this.state.redirect) {
-      return (<Redirect to={`/student/${this.props.match.params.id}`}/>)
+      return (<Redirect to={`/students/${this.state.redirectId}`}/>)   
     }
+
     return (
       <div>
         <Header />
-        <EditStudentView student={this.props.student} 
+        <EditStudentView student={this.state} 
         handleChange = {this.handleChange} 
         handleSubmit={this.handleSubmit}
-        allCampuses={this.props.allCampuses}
+        errorMsg={this.state.errorMsg}
         />
       </div>
     );

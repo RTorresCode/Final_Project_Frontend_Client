@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     fontType: "bold",
     fontFamily: "Georgia, serif",
     fontSize: "80px",
-    color: "#66FCF1",
+    color: "#66FCFf",
   },
   appBar: {
     backgroundColor: "#1F2833",
@@ -85,7 +85,7 @@ const HomePageView = () => {
             }}
           />
           <h1>
-            Welcome to Campus Manager! You can add your college campus with its
+            Welcome to our campus management system! You can add your college campus with its
             respective students here. Click on the buttons to get started.
           </h1>
           <img

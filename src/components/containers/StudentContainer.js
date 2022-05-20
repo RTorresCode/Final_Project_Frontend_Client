@@ -7,17 +7,18 @@ If needed, it also defines the component's "connect" function.
 ================================================== */
 import Header from './Header';
 import React, { Component } from "react";
+import { Redirect } from 'react-router-dom'
 import { connect } from "react-redux";
 import { fetchStudentThunk , 
          deleteStudentThunk  } from "../../store/thunks";
 import { StudentView } from "../views";
-import { EditStudentContainer } from "./index"
+
 
 class StudentContainer extends Component {
   constructor(props) { // initialize state
     super(props); 
     this.state = {
-        editor: false,
+      studRedirect: false,
     }
   }
   // Get student data from back-end database
@@ -25,39 +26,24 @@ class StudentContainer extends Component {
     //getting student ID from url
     this.props.fetchStudent(this.props.match.params.id);
   }
-  
-  toggleEdit = () => {
-    let new_editor = !this.state.editor;
+  handleDelete = async studentId => {
+    await this.props.deleteStudent(studentId);
     this.setState({
-      editor: new_editor 
-    });
+      studRedirect: true
+    })
   }
+  
   // Render Student view by passing student data as props to the corresponding View component
   render() {
-    if (!this.props.student) { // If student doesn't exist
-      return (
-        <h1>Student not found!</h1> // Return this so that /students/<random-id> doesn't crash  
-      ); 
-    }
     return (
+      this.state.studRedirect ? <Redirect to={`/students`}/> :
       <div>
         <Header />
-        <StudentView 
-        student={this.props.student} 
-        toggleEdit={this.toggleEdit}
-        editing={this.state.editor} 
-        deleteStudent={this.props.deleteStudent}
-        />
-        {this.state.editor ? (
-          <EditStudentContainer student={this.props.student}/>
-        ) : (
-          null // do nothing
-        )}
+        <StudentView handleDelete={this.handleDelete} student={this.props.student} />
       </div>
     );
   }
-}
-
+}   
 // The following 2 input arguments are passed to the "connect" function used by "StudentContainer" to connect to Redux Store.  
 // The following 2 input arguments are passed to the "connect" function used by "AllCampusesContainer" component to connect to Redux Store.
 const mapState = (state) => {
@@ -70,7 +56,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchStudent: (id) => dispatch(fetchStudentThunk(id)),
-    deleteStudent: (id) => dispatch(deleteStudentThunk(id))
+    deleteStudent: (studentId) => dispatch(deleteStudentThunk(studentId))
   };
 };
 

@@ -8,54 +8,34 @@ import { Link } from "react-router-dom";
 
 // Take in props data to construct the component
 const CampusView = (props) => {
-  const {campus, editing, toggleEdit, deleteCampus, enrollStudent, dropStudent} = props;
+  const {campus, handleDelete} = props;
   
   // Render a single Campus view with list of its students
   return (
     <div>
       <h1>{campus.name}</h1>
+      <img style={{width:'10%', borderRadius:'50%'}} src={campus.imageUrl ? campus.imageUrl : "https://i.imgur.com/srY1LWf.jpg"} alt="" />
       <p>{campus.address}</p>
-      <h6>ID: {campus.id}</h6>
       <p>{campus.description}</p>
-      <img src={campus.imageUrl} alt="Campus Profile"/>
-      {campus.students.length === 0 ? (
-        <h2>There are no students enrolled at {campus.name}.</h2>
-      ) : (
-        campus.students.map( student => {
-          let name = student.firstname + " " + student.lastname;
-          return (
-            <div key={student.id}>
-              <Link to={`/student/${student.id}`}>
-                <h2>{name}</h2>
-              </Link>             
-            </div>
-          );
-        })
-      )}
-      <br /> 
-      {/* Was completely breaking the page, as the student/campus gets instant deleted, changed how onClick written */}
-      <button onClick={() => {deleteCampus(campus.id); alert("Campus Deleted!")}} href="/campuses">Delete Campus</button>
+      {!campus.students.length && <h3>No Enrolled Students </h3>}
+      {campus.students.map( student => {
+        let name = student.firstname + " " + student.lastname;
+        return (
+          <div key={student.id}>
+            <Link to={`/students/${student.id}`}>
+              <h2>{name}</h2>
+            </Link>             
+          </div>
+        );
+      })}
+      <button className="btn" onClick={() => handleDelete(campus.id)}>Delete</button>
       <br />
       <br />
-      <input 
-      type="text" 
-      id="studentId"
-      placeholder="Enter Student ID to add / remove"
-      />
-      <br />
-      <button onClick={() => {enrollStudent(campus.id, document.getElementById("studentId").value); console.log(document.getElementById("studentId").value); alert("Add attempted")}}>Add This Student ID to Campus</button> 
-      <br />
-      <button onClick={() => {dropStudent(campus.id, document.getElementById("studentId").value); console.log(document.getElementById("studentId").value); alert("Remove attempted")}}>Remove This Student ID from Campus</button>
-      <br />
-      <br />
-      {editing ? (
-        <button onClick={toggleEdit}>Quit Edit</button>
-      ) : (
-        <button onClick={toggleEdit}>Edit Campus</button>
-      )}
-      <br />
+      <Link to={`/editcampus/${campus.id}`}>
+            <button className="btn">Edit Campus</button>
+      </Link>
     </div>
   );
 };
 
-export default CampusView;
+export default CampusView;    
