@@ -33,7 +33,15 @@ const CampusView = (props) => {
         })
       )}
       {/* Was completely breaking the page, as the student/campus gets instant deleted, changed how onClick written */}
-      <button onClick={() => {deleteCampus(campus.id); alert("Campus Deleted!")}} href="/campuses">Delete Campus</button>
+      <button onClick={async () => {
+        let id = campus.id;
+        await deleteCampus(campus.id);
+        if(id > 9){
+            window.location.assign(window.location.href.slice(0, -3) + 'es')
+        } else {
+            window.location.assign(window.location.href.slice(0, -2) + 'es')
+        }
+        }}>Delete Campus</button>
       <br />
       <br />
       {/*<input */}

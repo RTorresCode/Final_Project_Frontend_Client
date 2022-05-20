@@ -47,7 +47,7 @@ const AllCampusesView = (props) => {
           <p>{campus.address}</p>
           <p>{campus.description}</p>
           <br/>
-          <button onClick={() => deleteCampus(campus.id)}>Delete</button>
+          <button onClick={() => deleteCampus(campus.id)}>Delete Campus</button>
           <br />
           {editing ? (
           <EditCampusContainer campus={campus}/>

@@ -38,8 +38,14 @@ const StudentView = (props) => {const { student, editing, toggleEdit, deleteStud
       )}
       {}
       <button onClick={async () => {
+        let id = student.id;
         await deleteStudent(student.id);
-        window.location.assign(window.location.href)}}>Delete Student</button>
+        if(id > 9){
+            window.location.assign(window.location.href.slice(0, -3) + 's')
+        } else {
+            window.location.assign(window.location.href.slice(0, -2) + 's')
+        }
+        }}>Delete Student</button>
       <br />
       <br />
       {editing ? (
