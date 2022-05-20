@@ -4,7 +4,7 @@ StudentView.js
 The Views component is responsible for rendering web page with data provided by the corresponding Container component.
 It constructs a React component to display the single student view page.
 ================================================== */
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 const StudentView = (props) => {const { student, editing, toggleEdit, deleteStudent} = props;
     //if (student.gpa !== null) {
@@ -36,9 +36,11 @@ const StudentView = (props) => {const { student, editing, toggleEdit, deleteStud
           )}
         </div>
       )}
-      <br />
       {}
-      <button onClick={() => {deleteStudent(student.id); alert("Student Deleted!")}}>Delete Student</button>
+      <button onClick={async () => {
+        await deleteStudent(student.id);
+        window.location.assign(window.location.href)}}>Delete Student</button>
+      <br />
       <br />
       {editing ? (
         <button onClick={toggleEdit}>Quit Edit</button>
