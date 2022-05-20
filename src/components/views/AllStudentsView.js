@@ -50,7 +50,7 @@ const AllStudentsView = (props) => {
               {}
               <img src={url} alt="Student Profile"/>
               <br/>
-              <button onClick={() => deleteStudent(student.id)}>Delete</button>
+              <button onClick={() => deleteStudent(student.id)}>Delete Student</button>
               <br />
               {editing ? (
               <EditStudentContainer student={student}/>
