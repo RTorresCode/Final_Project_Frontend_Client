@@ -14,6 +14,7 @@ import { fetchCampusThunk,
         } from "../../store/thunks";
 
 import { CampusView } from "../views";
+import { EditCampusContainer } from "./index";
 
 class CampusContainer extends Component {
   constructor(props) { //initialize state
@@ -47,6 +48,11 @@ class CampusContainer extends Component {
         editing={this.state.editor} 
       
         />
+        {this.state.editor ? (
+          <EditCampusContainer campus={this.props.campus}/>
+        ) : (
+          null // do nothing
+        )}
       </div>
     );
   }

@@ -28,15 +28,15 @@ const AllCampusesView = (props) => {
       <Link to={`/newcampus`}>
         <button>Add New Campus</button>
       </Link>
-      <br />
-      {editing ? (
-        <button onClick={toggleEdit}>Quit Editing</button>
-      ) : (
-        <button onClick={toggleEdit}>Edit Campuses</button>
-      )}
-      <br/><br/>
+      {/*<br />*/}
+      {/*{editing ? (*/}
+      {/*  <button onClick={toggleEdit}>Quit Editing</button>*/}
+      {/*) : (*/}
+      {/*  <button onClick={toggleEdit}>Edit Campuses</button>*/}
+      {/*)}*/}
+      {/*<br/><br/>*/}
 
-      {allcampuses.map((campus) => (
+      {allCampuses.map((campus) => (
         <div key={campus.id}>
           <Link to={`/campus/${campus.id}`}>
             <h2>{campus.name}</h2>

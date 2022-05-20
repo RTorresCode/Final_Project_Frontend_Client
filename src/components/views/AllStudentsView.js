@@ -31,12 +31,12 @@ const AllStudentsView = (props) => {
         <button>Add New Student</button>
       </Link>
       <br />
-      {editing ? (
-        <button onClick={toggleEdit}>Quit Editing</button>
-      ) : (
-        <button onClick={toggleEdit}>Edit Students</button>
-      )}
-      <br/><br/>
+      {/*{editing ? (*/}
+      {/*  <button onClick={toggleEdit}>Quit Editing</button>*/}
+      {/*) : (*/}
+      {/*  <button onClick={toggleEdit}>Edit Students</button>*/}
+      {/*)}*/}
+      {/*<br/><br/>*/}
 
       {students.map((student) => {
           let name = student.firstname + " " + student.lastname;
