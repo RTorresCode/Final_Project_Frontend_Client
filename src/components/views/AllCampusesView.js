@@ -6,75 +6,69 @@ It constructs a React component to display all campuses.
 ================================================== */
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { EditCampusContainer } from "../containers/index"
 
 const AllCampusesView = (props) => {
-  const {allCampuses, deleteCampus , toggleEdit, editing} = props;
+    const { deleteCampus } = props;
 
-  // If there is no campus, display a message.
+    // If there is no campus, display a message.
     if (!props.allCampuses.length) {
-    return <div>
-    <p>There are no campuses.</p>
-    <Link to={`/newcampus`}>
-      <button>Add New Campus</button>
-    </Link>  
-    </div>
-  }
+        return (
+            <div>
+                <p>There are no campuses.</p>
+                <p className="text">Please add a new campus</p>
+                <Link to={`/newcampus`}>
+                    <button>Add New Campus</button>
+                </Link>
+            </div>
+        );
+    }
 
-  // If there is at least one campus, render All Campuses view 
-  return (
-    <div>
-      <h1>All Campuses</h1>
-      <Link to={`/newcampus`}>
-        <button>Add New Campus</button>
-      </Link>
-      {/*<br />*/}
-      {/*{editing ? (*/}
-      {/*  <button onClick={toggleEdit}>Quit Editing</button>*/}
-      {/*) : (*/}
-      {/*  <button onClick={toggleEdit}>Edit Campuses</button>*/}
-      {/*)}*/}
-      {/*<br/><br/>*/}
+    // If there is at least one campus, render All Campuses view 
+    return (
+        <div className="allCampuses">
+            <h1 style={{ color: "#63229A" }} className="pageTitle">All Campuses
+                <span>
+                    <br />
+                    <Link to={`/newcampus`}>
+                        <button className="addButton">Add New Campus</button>
+                    </Link>
+                </span>
+            </h1>
 
-      {allCampuses.map((campus) => (
-        <div key={campus.id}>
-          <Link to={`/campus/${campus.id}`}>
-            <h2>{campus.name}</h2>
-          </Link>
-          <h4>Campus ID: {campus.id}</h4>
-          {}
-          <img src={campus.imageUrl} alt="Campus Profile"/>
-          <p>{campus.address}</p>
-          <p>{campus.description}</p>
-          <br/>
-          <button onClick={() => deleteCampus(campus.id)}>Delete Campus</button>
-          <br />
-          {editing ? (
-          <EditCampusContainer campus={campus}/>
-          ) : (
-            null // do nothing
-          )}
-          <hr/>
+            {props.allCampuses.map((campus) => (
+                <div key={campus.id}>
+                    <Link to={`/campuses/${campus.id}`}>
+                        <h2>{campus.name}</h2>
+                    </Link>
+                    <img className="campusImage" style={{ width: '10%', borderRadius: '50%' }} src={campus.imageUrl ? campus.imageUrl : "https://i.imgur.com/srY1LWf.jpg"} alt="" />
+                    <h4>Campus ID: {campus.id}</h4>
+                    <h4>Address: {campus.address}</h4>
+                    <h4>Description: {campus.description}</h4>
+                    <button className="btn" onClick={() => deleteCampus(campus.id)}>Delete Campus</button>
+                    <hr />
+                </div>
+            ))}
+            <br />
+            <Link to={`/newcampus`}>
+                <button className="btn">Add New Campus</button>
+            </Link>
+            <br />
+            <br />
         </div>
-      ))}
-      <br/>
-    </div>
-  );
+    );
 };
 
 AllCampusesView.propTypes = {
-  allCampuses: PropTypes.array.isRequired,
+    allCampuses: PropTypes.array.isRequired,
 };
 
 export default AllCampusesView;
 
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
+

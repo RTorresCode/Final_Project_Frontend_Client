@@ -1,133 +1,146 @@
-
+import Header from './Header';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { Redirect } from 'react-router-dom';
 import EditStudentView from '../views/EditStudentView';
 import { editStudentThunk } from '../../store/thunks';
-
+import { fetchStudentThunk } from "../../store/thunks";
+import { fetchAllCampusesThunk } from "../../store/thunks";
 
 
 class EditStudentContainer extends Component {
-    constructor(props){
+    // componentDidMount() {
+
+    //   this.props.fetchStudent(this.props.match.params.id);
+    //   this.props.fetchAllCampuses();
+    // }
+
+    constructor(props) {
         super(props);
+
         this.state = {
-          firstname: "", 
-          lastname: "",
-          gpa: -1,
-          email: "",
-          imageUrl: "",
-          id: -1,
-          campusId: -1, 
-          redirect: false, 
-          errorCaught: false, 
-          redirectId: null
+            firstname: "",
+            lastname: "",
+            campusId: null,
+            email: "",
+            imageUrl: null,
+            gpa: null,
+            redirect: false,
+            redirectId: null,
+            errorMsg: null
         };
     }
 
     componentDidMount() {
-      this.setState({firstname: this.props.student.firstname,
-          lastname: this.props.student.lastname, 
-          gpa: this.props.student.gpa,
-          email: this.props.student.email,
-          imageUrl: this.props.student.imageUrl,
-          campusId: this.props.student.campusId,
-          id: this.props.student.id});  
+        //getting student ID from url
+        this.props.fetchAllCampuses();
+        this.handleInit(this.props.match.params.id);
+    }
+
+    handleInit = async studentId => {
+        await this.props.fetchStudent(studentId);
+        this.setState({
+            firstname: this.props.student.firstname,
+            lastname: this.props.student.lastname,
+            campusId: this.props.student.campusId,
+            email: this.props.student.email,
+            imageUrl: this.props.student.imageUrl,
+            gpa: this.props.student.gpa,
+            redirectId: this.props.student.id
+        });
     }
 
     handleChange = event => {
-      const {name, value, type, checked} = event.target
-      type === "checkbox" ? this.setState({ [name]: checked }) : this.setState({ [name]: value })
+        this.setState({
+            [event.target.name]: event.target.value
+        });
     }
-    handleSubmit = async event =>  {
-      event.preventDefault(); 
-  
-      let new_info = { 
-        firstname: this.state.firstname,
-        lastname: this.state.lastname,
-        gpa: this.state.gpa,
-        email: this.state.email,
-        imageUrl: this.state.imageUrl,
-        campusId: this.state.campusId,
-        id: this.state.id
-      };
-      if (new_info.imageUrl !== "") { 
-      }
-  
-      
-        try {
-          let student = await this.props.editStudent(new_info) 
-          console.log(student.id); 
-          alert(`${new_info.firstname} ${new_info.lastname}'s edit was saved.`); 
-      
-          this.setState({
-            firstname: "", 
-            lastname: "",
-            gpa: -1,
-            email: "",
-            imageUrl: "",
-            id: -1,
-            campusId: -1,
-            redirect: true, 
-          });
+
+    handleSubmit = async event => {
+        event.preventDefault();
+
+        let contSubmit = false;
+        let formCampusId = this.state.campusId;
+
+
+        if (!formCampusId) {
+            contSubmit = true;
+            formCampusId = null;
         }
-        catch(err) { 
-          console.error(err); 
-          alert("Error with edit!");
-          this.setState({
-            errorCaught: true 
-          });
-        };
+
+        if (!contSubmit) {
+            for (let i of this.props.allCampuses) {
+                if (i.id === this.state.campusId) {
+                    contSubmit = true;
+                    break;
+                }
+            }
+        }
+        if (!contSubmit) {
+            this.setState({
+                errorMsg: "Invalid Campus ID!"
+            });
+        }
+        else {
+            let student = {
+                firstname: this.state.firstname,
+                lastname: this.state.lastname,
+                campusId: formCampusId,
+                email: this.state.email,
+                imageUrl: this.state.imageUrl,
+                gpa: this.state.gpa,
+                id: this.state.redirectId
+            };
+
+            // Update student in back-end database
+            await this.props.editStudent(student);
+            // Update state, and trigger redirect to updated student
+            this.setState({
+                firstname: '',
+                lastname: '',
+                campusId: null,
+                email: '',
+                redirect: true
+            });
+        }
     }
-    
+
     componentWillUnmount() {
-      this.setState({redirect: false, redirectId: null});
+        this.setState({ redirect: false, redirectId: null });
     }
-    
+
+
     render() {
-      if(this.state.redirect) {
-        window.location.reload(); 
-      }
-  
-     return (
-        <div>
-          <EditStudentView
-            handleChange = {this.handleChange} 
-            handleSubmit={this.handleSubmit}
-            student={this.props.student}
-          />
-          {this.state.errorCaught ? (
+        if (this.state.redirect) {
+            return (<Redirect to={`/students/${this.state.redirectId}`} />)
+        }
+
+        return (
             <div>
-              <br />
-              <p>Student First and Last names: Cannot be null.</p>
-              <p>Student's Campus ID: Must be a valid  and actual campus ID of a school within this database.</p>
-              <p>Student Email: Cannot be null.</p>
-              <p>Student Image: Can be left blank.</p>
-              <p>Student GPA: Must be between 0.0 and 4.0.</p>
+                <Header />
+                <EditStudentView student={this.state}
+                    handleChange={this.handleChange}
+                    handleSubmit={this.handleSubmit}
+                    errorMsg={this.state.errorMsg}
+                />
             </div>
-          ) : (
-            null
-          )}
-        </div>          
-      );
+        );
     }
-  }
-  
- const mapDispatch = (dispatch) => {
-      return({
-          editStudent: (student) => dispatch(editStudentThunk(student)),
-      })
-  }
-  
-  export default connect(null, mapDispatch)(EditStudentContainer);
+}
 
+const mapState = (state) => {
+    return {
+        student: state.student,
+        allCampuses: state.allCampuses,
+    };
+};
 
+const mapDispatch = (dispatch) => {
+    return {
+        fetchStudent: (id) => dispatch(fetchStudentThunk(id)),
+        editStudent: (student) => dispatch(editStudentThunk(student)),
+        fetchAllCampuses: () => dispatch(fetchAllCampusesThunk()),
+    };
+};
 
-
-
-
-
-
-
-
-
-  
+export default connect(mapState, mapDispatch)(EditStudentContainer);

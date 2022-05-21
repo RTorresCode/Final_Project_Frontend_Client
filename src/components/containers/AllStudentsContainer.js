@@ -10,64 +10,51 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 
-import { 
-  fetchAllStudentsThunk,
-  deleteStudentThunk
+import {
+    fetchAllStudentsThunk,
+    deleteStudentThunk
 } from '../../store/thunks';
 
 import AllStudentsView from '../views/AllStudentsView';
 
 class AllStudentsContainer extends Component {
-  constructor(props) { 
-    super(props); 
-    this.state = {
-        editor: false,
+    // Get all students data from back-end database
+    componentDidMount() {
+        this.props.fetchAllStudents();
+        window.scrollTo(0, 0);
     }
-  }
-  // Get all students data from back-end database
-  componentDidMount() {
-    this.props.fetchAllStudents();
-  }
-
-  toggleEdit = () => {
-    let new_editor = !this.state.editor;
-    this.setState({
-      editor: new_editor 
-    });
-  }
 
 
-  // Render All Students view by passing all students data as props to the corresponding View component
-  render(){
-    return(
-      <div>
-        <Header />
-        <AllStudentsView 
-          students={this.props.allStudents}
-          deleteStudent={this.props.deleteStudent}   
-          toggleEdit={this.toggleEdit}
-          editing={this.state.editor}
-        />
-      </div>
-    )
-  }
+    // Render All Students view by passing all students data as props to the corresponding View component
+    render() {
+        return (
+            <div>
+                <Header />
+                <AllStudentsView
+                    students={this.props.allStudents}
+                    deleteStudent={this.props.deleteStudent}
+                    editStudent={this.props.editStudent}
+                />
+            </div>
+        )
+    }
 }
 
 // The following 2 input arguments are passed to the "connect" function used by "AllStudentsContainer" component to connect to Redux Store.
 // 1. The "mapState" argument specifies the data from Redux Store that the component needs.
 // The "mapState" is called when the Store State changes, and it returns a data object of "allStudents".
 const mapState = (state) => {
-  return {
-    allStudents: state.allStudents,  // Get the State object from Reducer "allStudents"
-  };
+    return {
+        allStudents: state.allStudents,  // Get the State object from Reducer "allStudents"
+    };
 };
 // 2. The "mapDispatch" argument is used to dispatch Action (Redux Thunk) to Redux Store.
 // The "mapDispatch" calls the specific Thunk to dispatch its action. The "dispatch" is a function of Redux Store.
 const mapDispatch = (dispatch) => {
-  return {
-    fetchAllStudents: () => dispatch(fetchAllStudentsThunk()),
-    deleteStudent: (studentId) => dispatch(deleteStudentThunk(studentId)),
-  };
+    return {
+        fetchAllStudents: () => dispatch(fetchAllStudentsThunk()),
+        deleteStudent: (studentId) => dispatch(deleteStudentThunk(studentId)),
+    };
 };
 
 // Export store-connected container by default
