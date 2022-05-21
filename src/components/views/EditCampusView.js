@@ -3,8 +3,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(() => ({
-  formTitle:{
-    width: '500px',
+    formTitle: {
+        width: '500px',
         backgroundColor: '#f0f0f5',
         borderRadius: '5px',
         margin: 'auto',
@@ -13,76 +13,84 @@ const useStyles = makeStyles(() => ({
         flexGrow: 1,
         textAlign: 'left',
         textDecoration: 'none'
-    }, 
-    customizeAppBar:{
+    },
+    customizeAppBar: {
         backgroundColor: '#11153e',
         shadows: ['none'],
     },
-    formTitle:{
-        backgroundColor:'#c5c8d6',
-        marginBottom: '15px',
-        textAlign: 'center',
-        borderRadius: '5px 5px 0px 0px',
-        padding: '3px'
+    formContainer: {
+        width: '500px',
+        backgroundColor: '#f0f0f5',
+        borderRadius: '5px',
+        margin: 'auto',
     },
- }));
 
-  const EditCampusView = (props) => {
-  const classes = useStyles(); 
-  const {handleChange, handleSubmit, campus} = props;
-  
+}));
 
-  return (
-    <div>
-      <h1 style={{margin:'20px', color:'white'}}>Edit Campus</h1>
+const EditCampusView = (props) => {
+    const classes = useStyles();
+    const { campus, handleChange, handleSubmit, handleStudentRemove } = props;
 
-      <div className={classes.root}>
-        <div className={classes.formContainer}>
-          <div className={classes.formTitle}>
-            <Typography style={{fontWeight: 'bold', padding:'10px',fontSize: '20px'}}>
-            {campus.name}
-            </Typography>
-          </div>
-          <form style={{textAlign: 'center'}} onSubmit={(e) => handleSubmit(e)}>
-            <label style= {{ fontWeight: 'bold'}}>Name: </label>
-            <input type="text" name="name" required defaultValue={campus.name} onChange ={(e) => handleChange(e)} />
-            <br/>
-            <br/>
 
-            <label style= {{ fontWeight: 'bold'}}>Image URL: </label>
-            <input type="text" name="imageUrl" placeholder='(optional)' defaultValue={campus.imageUrl} onChange ={(e) => handleChange(e)} />
-            <br/>
-            <br/>
+    return (
+        <div>
+            <h1 style={{ margin: '20px', color: 'white' }}>Edit Campus</h1>
 
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>Address: </label>
-            <input type="text" name="address" required defaultValue={campus.address} onChange={(e) => handleChange(e)} />
-            <br/>
-            <br/>
+            <div className={classes.root}>
+                <div className={classes.formContainer}>
+                    <div className={classes.formTitle}>
+                        <Typography style={{ fontWeight: 'bold', padding: '10px', fontSize: '20px' }}>
+                            Edit Campus
+                        </Typography>
+                    </div>
+                    <form style={{ textAlign: 'center' }} onSubmit={(e) => handleSubmit(e)}>
+                        <label style={{ color: '#11153e', fontWeight: 'bold' }}>Campus Name: </label>
+                        <input required type="text" name="name" value={campus.name} onChange={(e) => handleChange(e)} />
+                        <br />
+                        <br />
 
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>Description: </label>
-            <textarea
-                name="description"
-                style={{ margin: 8, width:'300px', height:'75px'}}
-                defaultValue={campus.description}
-                required
-                fullWidth
-                margin="normal" 
-                onChange={(e) => handleChange(e)}>
-            </textarea>
-            <br/>
-            <Button style={{backgroundColor:'#585858',borderRadius:10,color:'white'}} type="submit">
-              Submit
-            </Button>
-            <br/>
-            <br/>
-          </form>
-          </div>
-      </div>
-    </div>    
-  )
+                        <label style={{ color: '#11153e', fontWeight: 'bold' }}>Description: </label>
+                        <input required type="text" name="description" value={campus.description} onChange={(e) => handleChange(e)} />
+                        <br />
+                        <br />
+
+                        <label style={{ color: '#11153e', fontWeight: 'bold' }}>Address: </label>
+                        <input required type="text" name="address" value={campus.address} onChange={(e) => handleChange(e)} />
+                        <br />
+                        <br />
+
+                        <label style={{ color: '#11153e', fontWeight: 'bold' }}>Pic URL: </label>
+                        <input type="text" name="imageUrl" value={campus.imageUrl ? campus.imageUrl : ""} onChange={(e) => handleChange(e)} />
+                        <br />
+                        <br />
+
+                        {!campus.students && <h3>No Students Enrolled</h3>}
+                        {campus.students && campus.students.map(student => {
+                            let name = student.firstname + " " + student.lastname;
+                            return (
+                                <div key={student.id}>
+                                    <h2>{name}</h2>
+                                    <button onClick={(e) => handleStudentRemove(e, student.id)}>Remove from campus</button>
+                                </div>
+                            );
+                        })}
+
+                        <br />
+                        <br />
+
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                        <br />
+                        <br />
+                        {props.message && <p>{props.message}</p>}
+                        <br />
+                        <br />
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 export default EditCampusView;
-
-
-  

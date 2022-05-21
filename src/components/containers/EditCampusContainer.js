@@ -1,10 +1,11 @@
-
+import Header from './Header';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { Redirect } from 'react-router-dom';
 import EditCampusView from '../views/EditCampusView';
 import { editCampusThunk } from '../../store/thunks';
-
+import { fetchCampusThunk } from "../../store/thunks";
+import { editStudentThunk } from "../../store/thunks";
 
 
 class EditCampusContainer extends Component {
@@ -12,109 +13,127 @@ class EditCampusContainer extends Component {
         super(props);
         this.state = {
             name: "",
-            imageUrl: props.campus.imageUrl,
-            address: "",
             description: "",
-            id: props.campus.id,
+            address: "",
+            imageUrl: null,
+            students: null,
+            removedStudents: null,
+            message: null,
             redirect: false,
-            errorCaught: false,
             redirectId: null
-        };
+        }
     }
 
-    componentDidMount() {
+    componentDidMount() { //getting campus ID from url
+        this.handleInit(this.props.match.params.id);
+    }
+
+    handleInit = async campusId => {
+        await this.props.fetchCampus(campusId);
         this.setState({
-            name: this.state.name,
-            imageUrl: this.state.imageUrl,
-            address: this.state.address,
-            description: this.state.description,
-            id: this.state.id
+            name: this.props.campus.name,
+            description: this.props.campus.description,
+            address: this.props.campus.address,
+            imageUrl: this.props.campus.imageUrl,
+            students: this.props.campus.students,
+            redirectId: this.props.campus.id
         });
     }
-
+    // Capture input data when it is entered
     handleChange = event => {
-        const { name, value, type, checked } = event.target
-        type === "checkbox" ? this.setState({ [name]: checked }) : this.setState({ [name]: value })
+        this.setState({
+            [event.target.name]: event.target.value
+        });
+        console.log("changes have been made");
     }
+
+
     handleSubmit = async event => {
         event.preventDefault();
 
-        let new_info = {
+        let campus = {
             name: this.state.name,
-            imageUrl: this.state.imageUrl,
-            address: this.state.address,
             description: this.state.description,
-            id: this.state.id
+            address: this.state.address,
+            imageUrl: this.state.imageUrl,
+            id: this.state.redirectId
         };
-        if (new_info.imageUrl !== "") {
+
+        if (this.state.removedStudents) {
+            for (let i of this.state.removedStudents) {
+                const newStudent = i;
+                newStudent.campusId = null;
+                this.props.editStudent(newStudent);
+            }
         }
+        await this.props.editCampus(campus); // Update student in back-end database
+        this.setState({  // Update state, and trigger redirect to show the edited campus
+            name: '',
+            address: '',
+            imageUrl: '',
+            description: '',
+            redirect: true
+        });
+    }
 
-
-        try {
-            let campus = await this.props.editCampus(new_info)
-            alert(`${new_info.name}'s edit was saved.`);
-
-            this.setState({
-                name: "",
-                imageUrl: "",
-                address: -1,
-                description: "",
-                id: -1,
-                redirect: true,
-            });
-        }
-        catch (err) {
-            console.error(err);
-            alert("Error with edit!");
-            this.setState({
-                errorCaught: true
-            });
-        };
+    handleStudentRemove = async (event, studentId) => {
+        event.preventDefault();
+        let currStudents = this.state.students;
+        let removedStudentArr = this.state.removedStudents ? this.state.removedStudents : [];
+        const removedStudent = currStudents.filter(student => student.id === studentId);
+        currStudents = currStudents.filter(student => student.id !== studentId);
+        removedStudentArr.push(removedStudent[0]);
+        this.setState({
+            message: "Hit the submit button to save campus changes to database",
+            students: currStudents,
+            removedStudents: removedStudentArr
+        })
     }
 
     componentWillUnmount() {
         this.setState({ redirect: false, redirectId: null });
     }
-
+    // Render edit campus input form
     render() {
         if (this.state.redirect) {
-            window.location.reload();
+            return (<Redirect to={`/campuses/${this.state.redirectId}`} />)
         }
-
         return (
             <div>
-                <EditCampusView
+                <Header />
+                <EditCampusView campus={this.state}
                     handleChange={this.handleChange}
                     handleSubmit={this.handleSubmit}
-                    campus={this.props.campus}
+                    handleStudentRemove={this.handleStudentRemove}
+                    message={this.state.message}
                 />
-                {this.state.errorCaught ? (
-                    <div>
-                        <br />
-                        <p>Campus name: Cannot be null.</p>
-                        <p>Campus Image: Can't be left blank.</p>
-                        <p>Campus address: Cannot be null.</p>
-                        <p>Campus description: Can't be left blank.</p>
-                    </div>
-                ) : (
-                    null
-                )}
             </div>
         );
     }
 }
 
+const mapState = (state) => {
+    return {
+        campus: state.campus,
+
+    };
+};
+// The following input argument is passed to the "connect" function used by "EditStudentContainer" component to connect to Redux Store.
+// The "mapDispatch" argument is used to dispatch Action (Redux Thunk) to Redux Store.
+// The "mapDispatch" calls the specific Thunk to dispatch its action. The "dispatch" is a function of Redux Store.
 const mapDispatch = (dispatch) => {
     return ({
+        fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
         editCampus: (campus) => dispatch(editCampusThunk(campus)),
+        editStudent: (student) => dispatch(editStudentThunk(student))
     })
 }
 
-export default connect(null, mapDispatch)(EditCampusContainer);
+// Export store-connected container by default
+// EditStudentContainer uses "connect" function to connect to Redux Store and to read values from the Store 
+// (and re-read the values when the Store State updates).
 
-
-
-
+export default connect(mapState, mapDispatch)(EditCampusContainer);
 
 
 

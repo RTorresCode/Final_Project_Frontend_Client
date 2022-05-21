@@ -24,7 +24,7 @@ class NewCampusContainer extends Component {
             redirect: false,
             redirectId: null,
             imageUrl: "",
-            errorCaught: false
+
         };
     }
 
@@ -45,33 +45,21 @@ class NewCampusContainer extends Component {
             description: this.state.description,
             imageUrl: this.state.imageUrl,
         };
-        if (campus.imageUrl === "") { 
-            delete campus.imageUrl; 
-        }
+        // if (campus.imageUrl === "") { 
+        //     delete campus.imageUrl; 
+        // }
 
         // Add new campus in back-end database
-        await this.props.addCampus(campus)
-        .then(newCampus => {
-            console.log(newCampus);
+        let newCampus = await this.props.addCampus(campus);
 
-        // Update state, and trigger redirect to show the new campus
+        // Update state, and trigger redirect to show the new student
         this.setState({
             name: "",
-            address: "",
             description: "",
+            address: "",
             redirect: true,
-            redirectId: newCampus.id,
-            imageUrl: ""
+            redirectId: newCampus.id
         });
-        })
-        .catch(err => { // If errors doing the above, then: 
-         console.error(err); // Output error and give alert to new information at bottom of page
-         alert("Error with add! Please follow the Campus Information guidelines found at the bottom of the page");
-         this.setState({
-          errorCaught: true // Tell react to render new thing
-        });
-      });
-        
     }
 
     // Unmount when the component is being removed from the DOM:
@@ -79,11 +67,11 @@ class NewCampusContainer extends Component {
         this.setState({ redirect: false, redirectId: null });
     }
 
-    // Render new campus input form
+    // Render new student input form
     render() {
-        // Redirect to new campus's page after submit
+        // Redirect to new student's page after submit
         if (this.state.redirect) {
-            return (<Redirect to={`/campus/${this.state.redirectId}`} />)
+            return (<Redirect to={`/campuses/${this.state.redirectId}`} />)
         }
 
         // Display the input form via the corresponding View component
@@ -94,23 +82,12 @@ class NewCampusContainer extends Component {
                     handleChange={this.handleChange}
                     handleSubmit={this.handleSubmit}
                 />
-                {this.state.errorCaught ? (
-            <div>
-                <br />
-                <p>Campus name: Cannot be null.</p>
-                <p>Campus address: Cannot be null.</p>
-                <p>Campus Image: Should be a valid image link, or can be left blank.</p>
-                <p>Campus Description: Can be null.</p>
             </div>
-        ) : (
-          null
-        )}
-        </div>
         );
     }
 }
 
-// The following input argument is passed to the "connect" function used by "NewCampusContainer" component to connect to Redux Store.
+// The following input argument is passed to the "connect" function used by "NewStudentContainer" component to connect to Redux Store.
 // The "mapDispatch" argument is used to dispatch Action (Redux Thunk) to Redux Store.
 // The "mapDispatch" calls the specific Thunk to dispatch its action. The "dispatch" is a function of Redux Store.
 const mapDispatch = (dispatch) => {
@@ -120,6 +97,6 @@ const mapDispatch = (dispatch) => {
 }
 
 // Export store-connected container by default
-// NewCampusContainer uses "connect" function to connect to Redux Store and to read values from the Store 
+// NewStudentContainer uses "connect" function to connect to Redux Store and to read values from the Store 
 // (and re-read the values when the Store State updates).
 export default connect(null, mapDispatch)(NewCampusContainer);
